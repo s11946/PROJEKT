@@ -10,11 +10,14 @@ import java.util.List;
 import domain.Entity;
 import repositories.IRepository;
 import repositories.impl.IEntityBuilder;
+import unitofwork.IUnitOfWork;
+import unitofwork.IUnitOfWorkRepository;
 
 
 public abstract class Repository <TEntity extends Entity> 
-implements IRepository<TEntity> {
+implements IRepository<TEntity>, IUnitOfWorkRepository {
 	
+	protected IUnitOfWork uow;
 	protected Connection connection;
 	protected PreparedStatement insert;
 	protected PreparedStatement selectById;
@@ -27,7 +30,8 @@ implements IRepository<TEntity> {
     protected String deleteSql = "DELETE FROM" + getTableName() + "WHERE id=?";
     protected String selectAllSql = "SELECT * FROM" + getTableName();
     
-    protected Repository(Connection connection, IEntityBuilder<TEntity> builder){
+    protected Repository(Connection connection, IEntityBuilder<TEntity> builder, IUnitOfWork uow){
+    	this.uow = uow;
     	this.builder = builder;
     	this.connection = connection;
     	try {
@@ -44,41 +48,68 @@ implements IRepository<TEntity> {
 
     @Override
 	public void save(TEntity entity) {
+    	
+    	uow.markAsNew(entity, this);
+	}
+
+	@Override
+	public void update(TEntity entity) {
+
+		uow.markAsDirty(entity, this);
+    }
+
+	@Override
+	public void delete(TEntity entity) {
+
+		uow.markAsDeleted(entity, this);
+    }
+
+
+	@Override
+	public void persistAdd(Entity entity) {
+		
 		try {
-			setUpInsertQuery(entity);
-			this.insert.executeUpdate();
-		} catch(SQLException e) {
+			setUpInsertQuery((TEntity)entity);
+			insert.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}
 
-	@Override
-	public void update(TEntity entity) {
-        try {
-            setUpUpdateQuery(entity);
-            this.update.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
 	@Override
-	public void delete(TEntity entity) {
-        try {
-            this.delete.setInt(1, entity.getId());
-            this.delete.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+	public void persistUpdate(Entity entity) {
+		
+		try {
+			setUpUpdateQuery((TEntity)entity);
+			update.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 
+	@Override
+	public void persistDelete(Entity entity) {
+		
+		try {
+			delete.setInt(1, entity.getId());
+			delete.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 
 
 	@Override
 	public TEntity get(int id) {
-        try {
+       
+		try {
             this.selectById.setInt(1, id);
             ResultSet rs = this.selectById.executeQuery();
             while (rs.next()) {

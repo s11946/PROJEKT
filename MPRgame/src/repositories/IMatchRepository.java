@@ -6,7 +6,7 @@ import domain.Match;
 
 public interface IMatchRepository extends IRepository<Match> {
 	
-	public List<Match>	inLeague(League League);
+	public List<Match>	inLeague(League league);
 	
 	public List<Match>	inLeague(int leagueId);
 	

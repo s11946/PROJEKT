@@ -2,13 +2,17 @@ package repositories.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
+import repositories.IMatchRepository;
+import unitofwork.IUnitOfWork;
+import domain.League;
 import domain.Match;
 
-public class MatchRepository extends Repository<Match> {
+public class MatchRepository extends Repository<Match> implements IMatchRepository {
 	
-	public MatchRepository(Connection connection, IEntityBuilder<Match> builder) {
-		super(connection, builder);
+	public MatchRepository(Connection connection, IEntityBuilder<Match> builder, IUnitOfWork uow) {
+		super(connection, builder, uow);
 	}
 
 	@Override
@@ -41,6 +45,24 @@ public class MatchRepository extends Repository<Match> {
 	@Override
 	protected String getUpdateQuery() {
 		return "UPDATE match SET (score,league)=(?,?) WHERE id=?";
+	}
+
+	@Override
+	public List<Match> inLeague(League league) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Match> inLeague(int leagueId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Match> inLeague(String leagueName) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

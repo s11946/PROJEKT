@@ -11,7 +11,7 @@ public class DummyRepositoryCatalog implements IRepositoryCatalog {
 
 	@Override
 	public IMatchRepository getMatches() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return new DummyMatchRepository(db);
 	}
 
 	@Override

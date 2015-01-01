@@ -2,12 +2,14 @@ package repositories.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import unitofwork.IUnitOfWork;
 import domain.League;
 
 public class LeagueRepository extends Repository<League> {
 	
-	public LeagueRepository(Connection connection, IEntityBuilder<League> builder) {
-		super(connection, builder);
+	public LeagueRepository(Connection connection, IEntityBuilder<League> builder, IUnitOfWork uow) {
+		super(connection, builder, uow);
 	}
 
 

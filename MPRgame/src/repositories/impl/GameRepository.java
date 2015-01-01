@@ -2,12 +2,16 @@ package repositories.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import domain.Game;
 
-public class GameRepository extends Repository<Game>{
+import repositories.IGameRepository;
+import unitofwork.IUnitOfWork;
+import domain.Game;
+import domain.Team;
+
+public class GameRepository extends Repository<Game> implements IGameRepository{
 	
-	public GameRepository(Connection connection, IEntityBuilder<Game> builder) {
-		super(connection, builder);
+	public GameRepository(Connection connection, IEntityBuilder<Game> builder, IUnitOfWork uow) {
+		super(connection, builder, uow);
 	}
 
 	@Override
@@ -38,6 +42,24 @@ public class GameRepository extends Repository<Game>{
 	@Override
 	protected String getUpdateQuery() {
 		return "UPDATE game SET (name,code)=(?,?) WHERE id=?";
+	}
+
+	@Override
+	public Game fromTeam(Team team) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Game fromTeam(String teamName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Game fromTeam(int teamId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
